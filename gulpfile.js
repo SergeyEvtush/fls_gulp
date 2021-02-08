@@ -36,9 +36,8 @@ let { src, dest } = require('gulp'),
 	fileinclude = require('gulp-file-include'),
 	del = require('del'),
 	scss = require('gulp-sass'),
-	scss = require('gulp-sass'),
 	autoprefixer = require('gulp-autoprefixer'),
-	group_media = require('gulp-grup-media-queries'),//плагин для сбора медиа запросов по всему файлу и группировка их в одном месте
+	group_media = require('gulp-group-css-media-queries'),//плагин для сбора медиа запросов по всему файлу и группировка их в одном месте
 	clean_css = require('gulp-clean-css'),//чистит и сжимает css
 	rename = require('gulp-rename')
 	;
@@ -71,11 +70,6 @@ function css() {
 
 		})
 		)
-		.pipe(clean_css())//сжимаем и чистим css файл
-		.pipe(rename())//после сжатия файла мы его переименовываем
-		.pipe(
-			group_media()
-		)
 		.pipe(
 			autoprefixer({
 				overrideBrowserslist: ["last 5 versions"],
@@ -83,21 +77,39 @@ function css() {
 
 			})
 		)
-		.pipe(dest(path.build.css))//перебрасываю файлы из src в папку ,.pipe - это обращение к gulp(ставится перед командой для него)
+		.pipe(dest(path.build.css))//перебрасываю файлы из src в папку ,выгрузка полноценного css до сжатия.
+		.pipe(clean_css())//сжимаем и чистим css файл*/
+		.pipe(rename({
+			extname: ".min.css"//после сжатия файла мы его переименовываем для того чтобы можно было получить и полноценный файл тоже в папке distr
+		})
+		)
+		.pipe(
+			group_media()
+		)
+
+		.pipe(dest(path.build.css))//перебрасываю файлы из src в папку ,выгрузка минифицированного css файла.pipe - это обращение к gulp(ставится перед командой для него)
 		.pipe(browsersync.stream())
 
+}
+function js() {
+	return src(path.src.js)
+		.pipe(fileinclude())//установлен плагин для подключения файлов ,также он является шаблонизатором который позволяет передавть переменные и т.д
+		.pipe(dest(path.build.js))//перебрасываю файлы из src в папку ,.pipe - это обращение к gulp(ставится перед командой для него)
+		.pipe(browsersync.stream())
 }
 //функция для изменения файлов "на лету"
 function watchFiles() {
 	gulp.watch([path.watch.html], html);
 	gulp.watch([path.watch.css], css);
+	gulp.watch([path.watch.js], js);
 }
 //функция для очищения папки distr
 function clean(params) {
 	return del(path.clean);
 }
-let build = gulp.series(clean, gulp.parallel(css, html));
+let build = gulp.series(clean, gulp.parallel(js, css, html));
 let watch = gulp.parallel(build, watchFiles, browserSync);
+exports.js = js;
 exports.css = css;
 exports.html = html;
 exports.build = build;
