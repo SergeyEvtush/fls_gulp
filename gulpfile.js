@@ -39,7 +39,8 @@ let { src, dest } = require('gulp'),
 	autoprefixer = require('gulp-autoprefixer'),
 	group_media = require('gulp-group-css-media-queries'),//плагин для сбора медиа запросов по всему файлу и группировка их в одном месте
 	clean_css = require('gulp-clean-css'),//чистит и сжимает css
-	rename = require('gulp-rename')
+	rename = require('gulp-rename'),
+	uglify = require('gulp-uglify-es').default
 	;
 
 
@@ -94,6 +95,12 @@ function css() {
 function js() {
 	return src(path.src.js)
 		.pipe(fileinclude())//установлен плагин для подключения файлов ,также он является шаблонизатором который позволяет передавть переменные и т.д
+		.pipe(dest(path.build.js))//перебрасываю файлы из js в папку ,.pipe - это обращение к gulp(ставится перед командой для него)
+		.pipe(uglify())//минифицируем js
+		.pipe(rename({
+			extname: ".min.js"//после сжатия файла мы его переименовываем для того чтобы можно было получить и полноценный файл тоже в папке distr
+		})
+		)
 		.pipe(dest(path.build.js))//перебрасываю файлы из src в папку ,.pipe - это обращение к gulp(ставится перед командой для него)
 		.pipe(browsersync.stream())
 }

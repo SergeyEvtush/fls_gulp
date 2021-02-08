@@ -1,2 +1,2 @@
 console.log('подключеноооо');
-alert('fire');;
+alert('fire');
