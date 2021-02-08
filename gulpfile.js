@@ -44,7 +44,8 @@ let { src, dest } = require('gulp'),
 	imagemin = require('gulp-imagemin'),
 	webp = require('gulp-webp'),
 	webphtml = require('gulp-webp-html'),
-	webpcss = require('gulp-webpcss')
+	webpcss = require('gulp-webpcss'),
+	svgSprite = require('gulp-svg-sprite')
 	;
 
 
@@ -137,6 +138,22 @@ function images() {
 		//синхронизирую с браузером
 		.pipe(browsersync.stream())
 }
+/*gulp.task('svgSprite', function () {
+	return gulp.src([sourse_folder + '/iconsprite/*.svg'])
+		.pipe(svgSprite({
+			mode: {
+				stack: {
+					//разобраться не выгружает файлы в dist/img
+					sprite: "../1455739800_Kitchen_Bold_Line_Color_Mix-41_icon-icons.com_53389.svg",//путь к картинкам куда будет выводится готовый спрайт
+					examle: true//создается html файл с примерами иконок
+				}
+			},
+
+		}
+		))
+		.pipe(src(path.src.img))//выгружаем это все в папку с изображениями
+})*/
+
 //функция для изменения файлов "на лету"
 function watchFiles() {
 	gulp.watch([path.watch.html], html);
