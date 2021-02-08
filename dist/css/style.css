@@ -1,3 +1,11 @@
 .header {
-  font-size: 30px;
+	font-size: 30px;
 }
+
+body {
+	background-image: url(../img/wall_PAPER.jpg);
+}
+
+.webp body {
+	background-image: url(../img/wall_PAPER.webp);
+} /*результат работы функции находящейся в файле webpСheckBrowserFunction.js*/

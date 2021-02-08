@@ -1,5 +1,3 @@
-console.log('подключеноооо');
-alert('fire');;
 
 //функция проверяющая поддерживает ли браузер webp и автоматически добавляет класс к тегу body
 function testWebP(callback) {
@@ -18,4 +16,4 @@ testWebP(function (support) {
 	} else {
 		document.querySelector('body').classList.add('no-webp');
 	}
-});;
+});
