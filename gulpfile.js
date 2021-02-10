@@ -1,6 +1,7 @@
 let project_folder = "dist";//папка для заказчика
 let sourse_folder = "#src";//папка с исходниками
 //назначаю названия папок которые будут храниться в папке для заказчика и пути к исходникам для этих папок
+//let fs = require('fs');//переменная для подключения шрифтов к файлу стилей
 let path = {
 	build: {
 		html: project_folder + "/",
@@ -45,7 +46,10 @@ let { src, dest } = require('gulp'),
 	webp = require('gulp-webp'),
 	webphtml = require('gulp-webp-html'),
 	webpcss = require('gulp-webpcss'),
-	svgSprite = require('gulp-svg-sprite')
+	//svgSprite = require('gulp-svg-sprite'),
+	ttf2woff = require('gulp-ttf2woff'),
+	ttf2woff2 = require('gulp-ttf2woff2'),
+	fonter = require('gulp-fonter')
 	;
 
 
@@ -138,6 +142,26 @@ function images() {
 		//синхронизирую с браузером
 		.pipe(browsersync.stream())
 }
+function fonts(params) {
+	src(path.src.fonts)//получаем исходники шрифтов
+		.pipe(ttf2woff())//конвертируем
+		.pipe(dest(path.build.fonts))//выгружаем готовый результат в папку фонтс
+	return src(path.src.fonts)//получаем исходники шрифтов
+		.pipe(ttf2woff2())//конвертируем
+		.pipe(dest(path.build.fonts))//выгружаем готовый результат в папку фонтс
+
+}
+//задача которая включается в ручную когда есть шрифты которые надо преобразовать в ttf
+gulp.task('otf2ttf', function () {
+	return src([sourse_folder + '/fonts/*.otf'])//иду в папку с исходниками и получаю файл с форматом otf
+		.pipe(fonter({// конвертирую с помощью плагина в формат ttf
+			formats: ['ttf']
+
+		}))
+		.pipe(dest(sourse_folder + '/fonts/'));//выгружаю в папку с исходниками оттуда в свою очередь другой функцией подхватываю и конвертируя перегружаю в dist
+
+}
+)
 /*gulp.task('svgSprite', function () {
 	return gulp.src([sourse_folder + '/iconsprite/*.svg'])
 		.pipe(svgSprite({
@@ -153,8 +177,32 @@ function images() {
 		))
 		.pipe(src(path.src.img))//выгружаем это все в папку с изображениями
 })*/
+//записывае имена файлов уже сконвертированных нами шрифтов в файл fonts
+/*function fontsStyle(params) {
+	let file_content = fs.readFileSync(source_folder + '/scss/fonts.scss');
+	if (file_content == '') {
+		fs.writeFile(source_folder + '/scss/fonts.scss', '', cb);
+		return fs.readdir(path.build.fonts, function (err, items) {
+			if (items) {
+				let c_fontname;
+				for (var i = 0; i < items.length; i++) {
+					let fontname = items[i].split('.');
+					fontname = fontname[0];
+					if (c_fontname != fontname) {
+						fs.appendFile(source_folder + '/scss/fonts.scss', '@include font("' + fontname + '", "' + fontname + '", "400", "normal");\r\n', cb);
+					}
+					c_fontname = fontname;
+				}
+			}
+		})
+	}
+}*/
 
+//функция callback необходимая для корректной работы нашего подключения шрифтов к файлу стилей
+/*function cb() {
+}*/
 //функция для изменения файлов "на лету"
+//!скачать шрифты ttf и otf для конвертации
 function watchFiles() {
 	gulp.watch([path.watch.html], html);
 	gulp.watch([path.watch.css], css);
@@ -165,8 +213,10 @@ function watchFiles() {
 function clean(params) {
 	return del(path.clean);
 }
-let build = gulp.series(clean, gulp.parallel(js, css, html, images));
+let build = gulp.series(clean, gulp.parallel(js, css, html, images, fonts)/*, fontsStyle*/);
 let watch = gulp.parallel(build, watchFiles, browserSync);
+//exports.fontsStyle = fontsStyle;
+exports.fonts = fonts;
 exports.images = images;
 exports.js = js;
 exports.css = css;
