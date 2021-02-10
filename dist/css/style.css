@@ -1,3 +1,19 @@
+@font-face {
+  font-family: "Hanalei-Regular";
+  font-display: swap;
+  src: url("../fonts/Hanalei-Regular.woff") format("woff"), url("../fonts/Hanalei-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Wider";
+  font-display: swap;
+  src: url("../fonts/Wider.woff") format("woff"), url("../fonts/Wider.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
 .header {
   font-size: 30px;
 }
