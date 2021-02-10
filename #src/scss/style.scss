@@ -8,8 +8,17 @@
 	}
 }
 @import "fonts";
+.name {
+	font-family: Wider;
+	color: white;
+
+	font-size: 70px;
+}
 .header {
 	font-size: 30px;
+	font-family: Hanalei-Regular;
+	color: white;
+	text-align: center;
 }
 body {
 	background-image: url(../img/wall_PAPER.jpg);

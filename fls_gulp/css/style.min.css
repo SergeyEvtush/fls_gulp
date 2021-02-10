@@ -14,8 +14,17 @@
   font-style: normal;
 }
 
+.name {
+  font-family: Wider;
+  color: #fff;
+  font-size: 70px;
+}
+
 .header {
   font-size: 30px;
+  font-family: Hanalei-Regular;
+  color: #fff;
+  text-align: center;
 }
 
 body {
